@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport'
   spec.add_dependency 'colorize'
   spec.add_dependency 'httparty'
-  spec.add_dependency 'zip'
+  spec.add_dependency 'rubyzip'
 
 
   spec.add_development_dependency 'rake'
