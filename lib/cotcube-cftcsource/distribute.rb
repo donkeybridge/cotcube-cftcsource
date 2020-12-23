@@ -50,7 +50,8 @@ module Cotcube
     # print list 
 
     def available_cftc_ids(config: init, print: true, sort: :exchange)
-      result = CSV.parse(`find #{init[:data_path]}/cot/* | grep legacy | xargs head -n1  | grep , | awk -v FS=, -v OFS=, '{print $5,$4,$1}' | sed 's/"//g' | sort | uniq`.chomp, headers: %i{ exchange id name }).map{|x| x.to_h} 
+      command = %Q[find #{init[:data_path]}/cot/* | grep legacy | xargs head -n1  | grep , | awk -v FS=, -v OFS=, '{print $5,$4,$1}' | sed 's/"//g' | sort | uniq]
+      result = CSV.parse(`#{command}`.chomp, headers: %i{ exchange id name }).map{|x| x.to_h}
       result = result.uniq{|row| row[:id] }
       if print
         result.sort_by{|x| x[sort]}.each {|row| puts "#{row[:exchange]}\t#{row[:id]}\t#{row[:name]}" }
