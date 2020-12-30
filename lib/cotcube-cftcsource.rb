@@ -20,6 +20,7 @@ require_relative 'cotcube-cftcsource/distribute'
 require_relative 'cotcube-cftcsource/provide'
 require_relative 'cotcube-cftcsource/series'
 
+# TODO: make these private files another gem, that finally requires _this_ gem to run
 private_files = Dir[__dir__ + '/cotcube-cftcsource/private/*.rb']
 private_files.each do |file| 
   # puts 'Loading private module extension ' + file.chomp
