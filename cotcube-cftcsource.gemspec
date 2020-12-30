@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['donkeybridge@jtown.eu']
 
   spec.summary       = 'Functions to download and process COT data, aggregated into a module'
-  spec.description   = 'Functions to download and process COT data, aggregated into a module'
+  spec.description   = 'Functions to download and process COT data, aggregated into a module '
 
   spec.homepage      = 'https://github.com/donkeybridge/'+ spec.name
   spec.license       = 'BSD-4-Clause'
@@ -26,15 +26,15 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'cotcube-indicators'
-  spec.add_dependency 'yaml'
-  spec.add_dependency 'activesupport'
-  spec.add_dependency 'colorize'
-  spec.add_dependency 'httparty'
-  spec.add_dependency 'rubyzip'
+  spec.add_dependency 'cotcube-indicators', '~> 0.1.10'
+  spec.add_dependency 'yaml', '~> 0.1'
+  spec.add_dependency 'activesupport', '~> 6'
+  spec.add_dependency 'colorize', '~> 0.8'
+  spec.add_dependency 'httparty', '~> 0.16'
+  spec.add_dependency 'rubyzip',  '~> 2.3'
 
 
-  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rake', '~> 13'
   spec.add_development_dependency 'rspec', '~>3.6'
   spec.add_development_dependency 'yard', '~>0.9'
 end
