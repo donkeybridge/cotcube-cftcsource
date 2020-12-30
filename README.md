@@ -70,6 +70,7 @@ Returns the requested series of raw COT data for given either :symbol or :id. Th
 Based on the data returned by CftcSource.provide and the given indicator set, a series is created, cached and returned. 
 
 The default indicator simply calculates the net positions for pairs of `_long` and `_short`. Other indicator sets can be created. A simple example is in `etc/cotcube/indicators-example.rb`.  
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

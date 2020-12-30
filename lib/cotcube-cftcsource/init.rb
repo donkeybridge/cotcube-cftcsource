@@ -4,15 +4,17 @@ module Cotcube
   module CftcSource
 
 
-    def symbols(config: init)
+    def symbols(config: init, type: nil, symbol: nil)
+      type = [type] unless [NilClass, Array].include?(type.class)
       if config[:symbols_file].nil?
-        CFTC_SYMBOL_EXAMPLES
+        SYMBOL_EXAMPLES
       else
-        CSV
-          .read(config[:symbols_file], headers: %i{ id symbol ticksize power months type bcf reports name})
-          .map{|row| row.to_h }
-          .map{|row| [ :ticksize, :power, :bcf ].each {|z| row[z] = row[z].to_f}; row }
-          .reject{|row| row[:id].nil? }
+        CSV.read(config[:symbols_file], headers: %i{ id symbol ticksize power months type bcf reports name}).
+          map{|row| row.to_h }.
+          map{|row| [ :ticksize, :power, :bcf ].each {|z| row[z] = row[z].to_f}; row }.
+          reject{|row| row[:id].nil? }.
+          tap{|all| all.select!{|x| type.include?(x[:type])} unless type.nil? }.
+          tap{|all| all.select!{|x| symbol.include?(x[:symbol])} unless symbol.nil? }
       end
     end
 
