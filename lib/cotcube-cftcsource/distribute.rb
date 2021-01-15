@@ -8,18 +8,18 @@ module Cotcube
     # @param [Hash] opts
     # @option [Integer, String] Year to be processed, defaults to current year
 
-    def distribute(year: Time.now.year, debug: false, config: init)
+    def distribute(year: Time.now.year, debug: false, config: init, quiet: false)
       raw_path = "#{config[:data_path]}/raw"
       cot_path = "#{config[:data_path]}/cot"
       CFTC_LINKS.each do |report, a|
 	a.each do |combined, _b|
-	  puts ("Processing #{report}\t#{combined}\t#{year}") if debug
+	  puts ("Processing #{report}\t#{combined}\t#{year}") unless quiet
 
 	  infile  = "#{raw_path}/#{report}_#{combined}_#{year}.csv"
 	  outfile = ->(symbol) { "#{cot_path}/#{symbol}/#{report}_#{combined}.csv" }
 
 	  last_report = lambda do |symbol|
-	    CSV.read("#{cot_path}/#{symbol}/#{report}_#{combined}.csv").last[1]
+	    CSV.parse(`tail -n1 #{cot_path}/#{symbol}/#{report}_#{combined}.csv`).last[1]
 	  rescue StandardError
 	    '1900-01-01'
 	  end
@@ -27,15 +27,18 @@ module Cotcube
 	  cache = {}
 	  csv_data = CSV.read(infile).tap { |lines| lines.shift if lines[0][0] =~ /Market/ }
 	  csv_data.sort_by { |x| x[2] }.each do |line|
+            puts "processing #{line.take(5)}" if debug
 	    next if line[3].length != 6
 
 	    sym = line[3]
 	    cache[sym] ||= last_report.call(sym)
-	    next if cache[sym] >= line[2]
+            puts "#{cache[sym]} >= #{line[2]}" if debug
+	    next if cache[sym] >= line[1]
 
 	    line << "#{report} #{combined}"
 	    line.map! { |x| x&.strip }
 	    begin
+              puts "Writing to #{outfile.call(sym)}: #{line.take(5)}" unless quiet
 	      CSV.open(outfile.call(sym), 'a+') { |f| f << line }
 	    rescue StandardError
 	      puts ("Found new id: #{sym}").colorize(:light_green)

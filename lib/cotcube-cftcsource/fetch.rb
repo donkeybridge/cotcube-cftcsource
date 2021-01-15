@@ -10,7 +10,7 @@ module Cotcube
     # @param [Boolean]         debug
     # @param [Hash]            config
     def fetch(year: Time.now.year, debug: false, silent: false, config: init)
-      last_report_date = `tail -n1 #{config[:data_path]}/cot/13874A/legacy_com.csv  | cut -d ',' -f 3`.chomp
+      recent_report_date = `tail -n1 #{config[:data_path]}/cot/13874A/legacy_com.csv  | cut -d ',' -f 3`.chomp
 
       CFTC_LINKS.each do |report, a|
         a.each do |combined, _b|
@@ -30,7 +30,9 @@ module Cotcube
 
           puts "Contents have been written to '#{file}'." if debug
           current_report_date = `head -n2 #{file} | tail -n1 | cut -d, -f3`.chomp
-          puts "Last date '#{last_report_date} is same as recent_date #{recent_report_date}, please re_run" if last_report_date == current_report_date or current_report_date=='' 
+          if recent_report_date == current_report_date || current_report_date==''
+            puts "#{report}:#{combined}\tLast date '#{current_report_date}' is same as recent_date '#{recent_report_date}', please re_run".colorize(:light_yellow)
+          end
         end
       end
     end
