@@ -9,7 +9,7 @@ module Cotcube
       if config[:symbols_file].nil?
         SYMBOL_EXAMPLES
       else
-        CSV.read(config[:symbols_file], headers: %i{ id symbol ticksize power months type bcf reports name}).
+        CSV.read(config[:symbols_file], headers: %i{ id symbol ticksize power months type bcf reports format name}).
           map{|row| row.to_h }.
           map{|row| [ :ticksize, :power, :bcf ].each {|z| row[z] = row[z].to_f}; row }.
           reject{|row| row[:id].nil? }.
