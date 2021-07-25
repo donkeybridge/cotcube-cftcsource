@@ -21,7 +21,7 @@ module Cotcube
                debug: false
               )
       raise ArgumentError, "Can only build series with given symbol" if symbol.nil?
-      symbol_config = symbols.select{|s| s[:symbol] == symbol.to_s.upcase }.first
+      symbol_config = Cotcube::Helpers.symbols(symbol: symbol).first
       raise ArgumentError, "Can only build series with known symbol, '#{symbol}' is unknown." if symbol_config.nil?
       puts "Using symbol_config '#{symbol_config}'" if debug
 

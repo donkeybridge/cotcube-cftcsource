@@ -15,7 +15,8 @@ module Cotcube
       after = DateTime.strptime(after, '%Y-%m-%d') if after.is_a? String
 
       unless symbol.nil? 
-        symbol_id = symbols.select{|s| s[:symbol] == symbol.to_s.upcase}.first[:id]
+        symbol_config = Cotcube::Helpers.symbols(symbol: symbol).first
+        symbol_id     = symbol_config[:id]
         raise ArgumentError, "Could not find match in #{config[:symbols_file]} for given symbol #{symbol}" if symbol_id.nil? 
         raise ArgumentError, "Mismatching symbol #{symbol} and given id #{id}" if not id.nil? and symbol_id != id
         id = symbol_id
