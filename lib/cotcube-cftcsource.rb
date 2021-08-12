@@ -3,7 +3,7 @@
 # require 'bundler/setup'
 # require 'rubygems/package'
 require 'active_support'
-require '../ci-dev/lib/cotcube-indicators'
+require '../cotcube-indicators/lib/cotcube-indicators'
 require 'cotcube-helpers'
 require 'colorize'
 require 'date' unless defined?(DateTime)
@@ -20,6 +20,7 @@ require_relative 'cotcube-cftcsource/fetch'
 require_relative 'cotcube-cftcsource/distribute'
 require_relative 'cotcube-cftcsource/provide'
 require_relative 'cotcube-cftcsource/series'
+require_relative 'cotcube-cftcsource/periodical'
 
 # TODO: make these private files another gem, that finally requires _this_ gem to run
 private_files = Dir[__dir__ + '/cotcube-cftcsource/private/*.rb']
@@ -40,6 +41,7 @@ module Cotcube
       :distribute,                # distributes currently downloaded ('fetch'ed) reports to id_based directories
       :available_cftc_ids,        # returns a list of locally available cftc ids 
       :provide,                   # returns a series based on id (or symbol) and report / combined
+      :weekly_run,                # bundles what needs to be done on EOW
       :series                     # returns a series based on provide, after application of indicator set
 
     # please not that module_functions of source provided in private files must be published there
