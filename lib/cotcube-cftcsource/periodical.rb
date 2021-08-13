@@ -7,8 +7,7 @@ module Cotcube
       configfile = '/etc/cotcube/cftcsource.yml'
       begin
         `sed -i '$ d' #{configfile} && echo 'always_force: true' >> #{configfile}`
-        fetch && distribute && exports && exports(lookback: 26)
-        iterate_signals symbol: 'DX', selected: false, count: 20
+        fetch && distribute && exports && exports(lookback: 26) && reorganize
       ensure
         `sed -i '$ d' #{configfile} && echo 'always_force: false' >> #{configfile}`
       end
