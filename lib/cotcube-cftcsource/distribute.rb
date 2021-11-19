@@ -38,13 +38,15 @@ module Cotcube
 	    line << "#{report} #{combined}"
 	    line.map! { |x| x&.strip }
 	    begin
-              puts "Writing to #{outfile.call(sym)}: #{line.take(5)}" unless quiet
+              #puts "Writing to #{outfile.call(sym)}: #{line.take(5)}" unless quiet
+              print '.'
 	      CSV.open(outfile.call(sym), 'a+') { |f| f << line }
 	    rescue StandardError
-	      puts ("Found new id: #{sym}").colorize(:light_green)
+	      puts ("Found new id: #{sym}")
 	      `mkdir #{cot_path}/#{sym}`
 	      CSV.open(outfile.call(sym), 'a+') { |f| f << line }
 	    end
+            puts 'done.'
 	  end
 	end
       end

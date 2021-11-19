@@ -3,7 +3,7 @@
 # require 'bundler/setup'
 # require 'rubygems/package'
 require 'active_support'
-require '../cotcube-indicators/lib/cotcube-indicators'
+require 'cotcube-indicators'
 require 'cotcube-helpers'
 require 'colorize'
 require 'date' unless defined?(DateTime)

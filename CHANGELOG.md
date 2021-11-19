@@ -1,3 +1,6 @@
+## 0.1.2.2 (November 19, 2021)
+
+
 ## 0.1.2.1 (July 25, 2021)
   - series / provide: adopted proper Helpers.symbols usage
   - bin/signals added :lookback parameter

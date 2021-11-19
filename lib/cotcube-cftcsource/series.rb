@@ -10,6 +10,7 @@ module Cotcube
     #   3. provides the series (containing only the lookback period requested)\q
     #
     def series(symbol: nil, 
+               id: nil,
                report: :legacy, 
                combined: :com,
                config: init,
@@ -20,10 +21,18 @@ module Cotcube
                measure: false,
                debug: false
               )
-      raise ArgumentError, "Can only build series with given symbol" if symbol.nil?
-      symbol_config = Cotcube::Helpers.symbols(symbol: symbol).first
-      raise ArgumentError, "Can only build series with known symbol, '#{symbol}' is unknown." if symbol_config.nil?
-      puts "Using symbol_config '#{symbol_config}'" if debug
+
+      now = Time.now
+      measuring = lambda {|x| if measure; puts "\nMeasured #{(Time.now - now).to_f.round(2)}: ".colorize(:light_yellow) +  x + "\n\n"; end }
+
+      raise ArgumentError, "Can only build series with given symbol or id" if symbol.nil? and id.nil?
+      unless symbol.nil?
+        symbol_config = Cotcube::Helpers.symbols(symbol: symbol).first
+        raise ArgumentError, "Can only build series with known symbol, '#{symbol}' is unknown." if symbol_config.nil?
+        puts "Using symbol_config '#{symbol_config}'" if debug
+      end
+
+      symbol ||= id
 
       lookback = config[:default_lookback] if lookback.nil? 
       raise ArgumentError, "Lookback may not be nil, either provide option or set :default_lookback in configfile" if lookback.nil?
@@ -71,16 +80,18 @@ module Cotcube
 	end
 	headers         = provide_headers + indicators.keys
 	puts 'Returning saved data' if debug
-	puts "#{Time.now - measure}: SERIES: returning series from file" if measure
+        data =  CSV.read(series_file, headers: headers, converters: :numeric).map(&:to_h)
+        data.map{|z| z[:date] = DateTime.parse(z[:date]) }
+        measuring.call("SERIES: returning series from file")
 
-	return CSV.read(series_file, headers: headers, converters: :all).map(&:to_h)
+	return data
       end
 
-      puts "#{Time.now - measure}: SERIES: before source" if measure
+      measuring.call "SERIES: before source"
 
-      source = provide(symbol: symbol, report: report, combined: combined, config: config, after: after, measure: measure)
+      source = provide(symbol: (id == symbol ? nil : symbol), id: id, report: report, combined: combined, config: config, after: after )
 
-      puts "#{Time.now - measure}: SERIES: after source" if measure
+      measuring.call "SERIES: after source" 
 
       puts "First source: #{source.first}" if debug
       puts "#{config}" if debug
@@ -92,7 +103,7 @@ module Cotcube
       end
       CSV.open(series_file, 'w') { |csv| source.map{|x| csv << x.values } }
 
-      puts "#{Time.now - measure}: SERIES: returning series from source" if measure
+      measuring.call "SERIES: returning series from source" 
       source
 
     end
