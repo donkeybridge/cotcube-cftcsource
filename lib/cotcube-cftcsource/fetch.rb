@@ -31,7 +31,7 @@ module Cotcube
           puts "Contents have been written to '#{file}'." if debug
           current_report_date = `head -n2 #{file} | tail -n1 | cut -d, -f3`.chomp
           if recent_report_date == current_report_date || current_report_date==''
-            puts "#{report}:#{combined}\tLast date '#{current_report_date}' is same as recent_date '#{recent_report_date}', please re_run".colorize(:light_yellow)
+            puts "#{format '%10s', report}:#{combined}\tLast date '#{current_report_date}' is same as recent_date '#{recent_report_date}', please re_run".colorize(:light_yellow)
           end
         end
       end
